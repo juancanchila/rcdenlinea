@@ -1,11 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2/promise');
-const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 
-// Importar rutas
+// 🔹 Importar rutas
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const generadorRoutes = require('./routes/generadorRoutes');
@@ -23,24 +22,45 @@ const pinRoutes = require('./routes/pinRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ---------------------------------------------------
+// 🧩 Configuración de middlewares
+// ---------------------------------------------------
 app.use(express.json());
 
-// 🔹 Habilitar CORS globalmente
-app.use(cors({
-  origin: [
-    'http://localhost:4200',                   // Angular local
-    'https://rcdenlinea.epacartagena.gov.co'   // Producción
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true
-}));
+// 🔹 Configuración CORS (manual para funcionar en Plesk / Nginx)
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    'http://localhost:4200',
+    'https://gestionrcd.epacartagena.gov.co',
+    'https://rcdenlinea.epacartagena.gov.co'
+  ];
 
-// 🔹 Ruta principal
-app.get('/', (req, res) => {
-  res.send('Servidor rcdenlinea corriendo y prueba de conexión ejecutada.');
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  next();
 });
 
-// 🔹 Configuración Swagger
+// ---------------------------------------------------
+// 🧩 Ruta principal
+// ---------------------------------------------------
+app.get('/', (req, res) => {
+  res.send('✅ Servidor rcdenlinea corriendo y prueba de conexión ejecutada correctamente.');
+});
+
+// ---------------------------------------------------
+// 🧩 Swagger configuración
+// ---------------------------------------------------
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -58,13 +78,15 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./src/routes/*.js'], // Asegúrate de usar './routes/*.js' si index.js está dentro de src
+  apis: ['./src/routes/*.js'], // Ajusta si el index.js está dentro de src/
 };
 
 const swaggerSpec = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// 🔹 Registrar todas las rutas
+// ---------------------------------------------------
+// 🧩 Rutas de la API
+// ---------------------------------------------------
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/generador', generadorRoutes);
@@ -77,12 +99,16 @@ app.use('/api/visitatecnica', visitatecnicaRoutes);
 app.use('/api/reportespma', reporteImpPmaRcdRoutes);
 app.use('/api/reportesrcd', reporteReporteRcdGenerador);
 app.use('/api/roles', roleRoutes);
-app.use('/api/pin', pinRoutes); // PIN
+app.use('/api/pin', pinRoutes);
 
-// 🔹 Iniciar servidor
+// ---------------------------------------------------
+// 🧩 Levantar servidor
+// ---------------------------------------------------
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor rcdenlinea corriendo en http://localhost:${PORT}`);
 });
 
-// 🔹 Exportar para pruebas o PM2
+// ---------------------------------------------------
+// 🧩 Exportar para pruebas o PM2
+// ---------------------------------------------------
 module.exports = app;
