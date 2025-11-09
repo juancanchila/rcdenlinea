@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2/promise');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const authRoutes = require('./routes/authRoutes');
@@ -20,6 +21,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+// 🔹 Habilitar CORS globalmente
+app.use(cors({
+  origin: [
+    'http://localhost:4200',                   // para desarrollo Angular
+    'https://rcdenlinea.epacartagena.gov.co'   // para producción
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
+}));
 
 // 🔹 Ruta principal
 app.get('/', (req, res) => {
