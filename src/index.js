@@ -1,53 +1,36 @@
 require('dotenv').config();
 const express = require('express');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsDoc = require('swagger-jsdoc');
-
-
+const mysql = require('mysql2/promise');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
-app.use(express.json());
-app.use(cookieParser());
-app.use(cors({ origin: true, credentials: true }));
+// Función para probar la conexión
+async function testDBConnection() {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT
+    });
 
-// Ruta raíz
-app.get('/', (req, res) => res.send('Login EPA activo'));
-
-// 🔹 Configuración Swagger
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'API RCD en Línea (EPA)',
-      version: '1.0.0',
-      description: 'Documentación completa de los endpoints del sistema EPA',
-    },
-    servers: [
-      {
-        url: `http://localhost:${PORT}`,
-        description: 'Servidor local',
-      },
-    ],
-  },
-  apis: ['./routes/*.js'], // escanea tus archivos de rutas
-};
-
-const swaggerSpec = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-
-// Exportar app
-module.exports = app;
-
-// Si quieres ejecutarlo directamente
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-    console.log(`📘 Documentación disponible en http://localhost:${PORT}/api-docs`);
-  });
+    console.log('✅ Conexión a la base de datos exitosa');
+    await connection.end();
+  } catch (error) {
+    console.error('❌ Error al conectar con la base de datos:', error.message);
+  }
 }
+
+// Probar conexión al iniciar
+testDBConnection();
+
+// Ruta de prueba
+app.get('/', (req, res) => {
+  res.send('Servidor rcdenlinea corriendo y prueba de conexión ejecutada.');
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+});
