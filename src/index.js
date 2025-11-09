@@ -24,9 +24,9 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'Documentación de la API rcdenlinea',
     },
-    servers: [
+    servers: [ 
       {
-        url: `http://localhost:${PORT}`,
+        url: `https://rcdenlinea.epacartagena.gov.co`,
       },
     ],
   },
