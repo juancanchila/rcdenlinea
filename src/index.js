@@ -1,70 +1,80 @@
 require('dotenv').config();
 const express = require('express');
-const mysql = require('mysql2/promise');
-const swaggerJsDoc = require('swagger-jsdoc');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+
+// Importar rutas
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const generadorRoutes = require('./routes/generadorRoutes');
+const transportadorRoutes = require('./routes/transportadorRoutes');
+const receptorRoutes = require('./routes/receptorRoutes');
+const proyectoRoutes = require('./routes/proyectoRoutes');
+const vehiculoRoutes = require('./routes/vehiculoRoutes');
+const resolucionRoutes = require('./routes/resolucionRoutes');
+const visitatecnicaRoutes = require('./routes/visitaTecnicaRoutes');
+const reporteImpPmaRcdRoutes = require('./routes/reporteImpPmaRcdRoutes');
+const reporteReporteRcdGenerador = require('./routes/rcdgeneradorRoutes');
+const roleRoutes = require('./routes/roleRoutes');
+const pinRoutes = require('./routes/pinRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuración de Swagger
+// Middlewares
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({ origin: true, credentials: true }));
+
+// Ruta raíz
+app.get('/', (req, res) => res.send('Login EPA activo'));
+
+// 🔹 Configuración Swagger
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'API RCD en Línea',
+      title: 'API RCD en Línea (EPA)',
       version: '1.0.0',
-      description: 'Documentación de la API para el proyecto rcdenlinea',
+      description: 'Documentación completa de los endpoints del sistema EPA',
     },
     servers: [
       {
         url: `http://localhost:${PORT}`,
+        description: 'Servidor local',
       },
     ],
   },
-  apis: ['./index.js'], // aquí puedes poner la ruta a tus archivos con endpoints
+  apis: ['./routes/*.js'], // escanea tus archivos de rutas
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+const swaggerSpec = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Función para probar la conexión
-async function testDBConnection() {
-  try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      port: process.env.DB_PORT,
-    });
+// 🔹 Rutas principales
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/generador', generadorRoutes);
+app.use('/api/transportador', transportadorRoutes);
+app.use('/api/receptor', receptorRoutes);
+app.use('/api/proyecto', proyectoRoutes);
+app.use('/api/vehiculo', vehiculoRoutes);
+app.use('/api/resolucion', resolucionRoutes);
+app.use('/api/visitatecnica', visitatecnicaRoutes);
+app.use('/api/reportespma', reporteImpPmaRcdRoutes);
+app.use('/api/reportesrcd', reporteReporteRcdGenerador);
+app.use('/api/roles', roleRoutes);
+app.use('/api/pin', pinRoutes);
 
-    console.log('✅ Conexión a la base de datos exitosa');
-    await connection.end();
-  } catch (error) {
-    console.error('❌ Error al conectar con la base de datos:', error.message);
-  }
+// Exportar app
+module.exports = app;
+
+// Si quieres ejecutarlo directamente
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`📘 Documentación disponible en http://localhost:${PORT}/api-docs`);
+  });
 }
-
-// Probar conexión al iniciar
-testDBConnection();
-
-// Ruta de prueba
-/**
- * @swagger
- * /:
- *   get:
- *     summary: Prueba del servidor
- *     description: Retorna un mensaje de confirmación del servidor.
- *     responses:
- *       200:
- *         description: Servidor corriendo correctamente
- */
-app.get('/', (req, res) => {
-  res.send('Servidor rcdenlinea corriendo y prueba de conexión ejecutada.');
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📘 Documentación disponible en http://localhost:${PORT}/api-docs`);
-});
