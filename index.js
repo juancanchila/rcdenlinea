@@ -1,16 +1,36 @@
-// Importar Express
+require('dotenv').config();
 const express = require('express');
-const app = express();
+const mysql = require('mysql2/promise');
 
-// Puerto donde correrá el servidor
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Ruta principal
+// Función para probar la conexión
+async function testDBConnection() {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT
+    });
+
+    console.log('✅ Conexión a la base de datos exitosa');
+    await connection.end();
+  } catch (error) {
+    console.error('❌ Error al conectar con la base de datos:', error.message);
+  }
+}
+
+// Probar conexión al iniciar
+testDBConnection();
+
+// Ruta de prueba
 app.get('/', (req, res) => {
-  res.send('¡Hola Mundo desde rcdenlinea con Express!');
+  res.send('Servidor rcdenlinea corriendo y prueba de conexión ejecutada.');
 });
 
-// Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
