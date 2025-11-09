@@ -5,8 +5,10 @@ const mysql = require('mysql2/promise');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Función para probar la conexión
+// Función de prueba de conexión
 async function testDBConnection() {
+  console.log('🧪 Probando conexión con la base de datos...');
+
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -16,21 +18,33 @@ async function testDBConnection() {
       port: process.env.DB_PORT
     });
 
-    console.log('✅ Conexión a la base de datos exitosa');
+    console.log('\n✅ CONEXIÓN EXITOSA A LA BASE DE DATOS ✅');
+    console.log(`   Base de datos: ${process.env.DB_NAME}`);
+    console.log(`   Usuario: ${process.env.DB_USER}`);
+    console.log(`   Servidor: ${process.env.DB_HOST}\n`);
+
     await connection.end();
+    return true;
+
   } catch (error) {
-    console.error('❌ Error al conectar con la base de datos:', error.message);
+    console.error('\n❌ ERROR AL CONECTAR CON LA BASE DE DATOS ❌');
+    console.error(`   Detalle: ${error.message}\n`);
+    return false;
   }
 }
 
-// Probar conexión al iniciar
-testDBConnection();
+// Ruta principal: ejecuta la prueba de conexión
+app.get('/', async (req, res) => {
+  const success = await testDBConnection();
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-  res.send('Servidor rcdenlinea corriendo y prueba de conexión ejecutada.');
+  if (success) {
+    res.send('✅ Conexión exitosa a la base de datos. Ver consola para detalles.');
+  } else {
+    res.send('❌ Error al conectar con la base de datos. Revisa la consola.');
+  }
 });
 
+// Iniciar servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
