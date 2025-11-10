@@ -1,15 +1,20 @@
 const jwt = require('jsonwebtoken');
 
+/**
+ * Middleware para verificar JWT desde una cookie llamada "token".
+ */
 exports.verifyToken = (req, res, next) => {
-  const header = req.headers['authorization'];
+  // 🧩 Leer token desde la cookie o desde el header (por compatibilidad)
+  const token =
+    req.cookies?.token ||
+    (req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null);
 
-  if (!header) {
+  if (!token) {
     return res.status(403).json({ message: 'Acceso denegado. Token no proporcionado.' });
   }
 
-  const token = header.split(' ')[1];
-
   try {
+    // 🧩 Verificar el token con la clave secreta
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
