@@ -16,6 +16,7 @@ const resolucionRoutes = require('./routes/resolucionRoutes');
 const visitatecnicaRoutes = require('./routes/visitaTecnicaRoutes');
 const reporteImpPmaRcdRoutes = require('./routes/reporteImpPmaRcdRoutes');
 const reporteReporteRcdGenerador = require('./routes/rcdgeneradorRoutes');
+const fileRoutes = require('./routes/fileRoutes');
 const roleRoutes = require('./routes/roleRoutes');
 const pinRoutes = require('./routes/pinRoutes');
 
@@ -100,7 +101,7 @@ app.use('/api/reportespma', reporteImpPmaRcdRoutes);
 app.use('/api/reportesrcd', reporteReporteRcdGenerador);
 app.use('/api/roles', roleRoutes);
 app.use('/api/pin', pinRoutes);
-
+app.use('/api/files', fileRoutes);
 // ---------------------------------------------------
 // 🧩 Levantar servidor
 // ---------------------------------------------------
