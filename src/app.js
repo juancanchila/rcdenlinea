@@ -60,6 +60,7 @@ app.use('/api/visitatecnica', visitatecnicaRoutes);
 app.use('/api/reportespma', reporteImpPmaRcdRoutes);
 app.use('/api/reportesrcd', reporteReporteRcdGenerador);
 app.use('/api/roles', roleRoutes);
-app.use('/api/pin', pinRoutes); // Rutas para buscar por PIN
+app.use('/api/pin', pinRoutes); 
+app.use('/api/files', fileRoutes);
 
 module.exports = app;
