@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 exports.verifyToken = (req, res, next) => {
   try {
     // Leer el token desde las cookies
-    const token = req.cookies.token;
+const token = req.cookies.token_epa;
 
     if (!token) {
       return res.status(403).json({ message: 'Acceso denegado. Token no encontrado en cookies.' });
