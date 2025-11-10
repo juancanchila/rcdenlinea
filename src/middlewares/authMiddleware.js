@@ -23,7 +23,7 @@ exports.verifyToken = (req, res, next) => {
 
     // 3️⃣ Intentar desde query param
     if (!token && req.query.token) {
-      token = req.query.token;
+      token = req.query.token_epa;
     }
 
     if (!token) {
