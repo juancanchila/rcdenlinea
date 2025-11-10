@@ -16,7 +16,8 @@ function normalizeFilename(filename) {
 router.get('/:filename', verifyToken, (req, res) => {
   const rawFilename = req.params.filename;
   const filename = normalizeFilename(rawFilename);
-  const filePath = path.join(__dirname, '..', 'private_uploads', filename);
+const filePath = path.join('/var/www/rcdenlinea/private_uploads', filename);
+
 
   console.log('-----------------------------');
   console.log('Archivo recibido:', rawFilename);
