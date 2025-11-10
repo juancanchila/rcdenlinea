@@ -13,7 +13,7 @@ function normalizeFilename(filename) {
 }
 
 // Ruta protegida: descarga/ver archivo
-router.get('/:filename', verifyToken, (req, res) => {
+router.get('/:filename', (req, res) => {
   const rawFilename = req.params.filename;
   const filename = normalizeFilename(rawFilename);
 
