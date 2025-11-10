@@ -3,7 +3,7 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-
+const cookieParser = require('cookie-parser');
 // 🔹 Importar rutas
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -22,7 +22,7 @@ const pinRoutes = require('./routes/pinRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.use(cookieParser());
 // ---------------------------------------------------
 // 🧩 Configuración de middlewares
 // ---------------------------------------------------
