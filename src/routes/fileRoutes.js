@@ -9,51 +9,64 @@ const { verifyToken } = require('../middlewares/authMiddleware');
 function normalizeFilename(filename) {
   return decodeURIComponent(filename)
     .normalize('NFC')      // Normaliza caracteres Unicode (acentos)
-    .replace(/\+/g, ' '); // Reemplaza '+' por espacio
+    .replace(/\+/g, ' ');  // Reemplaza '+' por espacio
 }
 
 // Ruta protegida: descarga/ver archivo
 router.get('/:filename', verifyToken, (req, res) => {
   const rawFilename = req.params.filename;
   const filename = normalizeFilename(rawFilename);
-const filePath = path.join('/var/www/rcdenlinea/private_uploads', filename);
 
-
+  // Depuración rutas
   console.log('-----------------------------');
-  console.log('Archivo recibido:', rawFilename);
-  console.log('Archivo normalizado:', filename);
-  console.log('Ruta completa:', filePath);
+  console.log('Nombre recibido por URL:', rawFilename);
+  console.log('Nombre decodificado:', decodeURIComponent(rawFilename));
+  console.log('Nombre normalizado:', filename);
+  console.log('Directorio actual (__dirname):', __dirname);
 
+  // Ruta absoluta de Plesk para este dominio
+  // Nota: ajusta según la ruta real de tu dominio
+  const uploadsDir = path.join(__dirname, '../../private_uploads'); // ejemplo típico en Plesk
+  const filePath = path.join(uploadsDir, filename);
+
+  console.log('Ruta del directorio uploads:', uploadsDir);
+  console.log('Ruta absoluta del archivo:', filePath);
+
+  // Listar archivos en el directorio para depuración
+  try {
+    const filesInDir = fs.readdirSync(uploadsDir);
+    console.log('Archivos en el directorio uploads:', filesInDir);
+  } catch (err) {
+    console.error('Error leyendo directorio uploads:', err.message);
+  }
+
+  // Comprobar existencia
   if (!fs.existsSync(filePath)) {
-    console.log('Archivo no encontrado.');
-    return res.status(404).json({ 
-      message: 'Archivo no encontrado.',
+    console.log('Archivo no encontrado en disco.');
+    return res.status(404).json({
+      message: 'Archivo no encontrado',
       receivedFilename: rawFilename,
       normalizedFilename: filename,
       attemptedPath: filePath
     });
   }
 
-  // Obtener información adicional del archivo
+  // Información del archivo
   const stats = fs.statSync(filePath);
   const mimeType = mime.lookup(filePath) || 'unknown';
-
   console.log('Archivo encontrado:');
   console.log('Tamaño:', stats.size, 'bytes');
   console.log('Tipo MIME:', mimeType);
 
-  // Respuesta JSON con información antes de enviar el archivo
-  res.json({
-    message: 'Archivo encontrado',
-    receivedFilename: rawFilename,
-    normalizedFilename: filename,
-    path: filePath,
-    size: stats.size,
-    mimeType: mimeType
+  // Enviar archivo
+  res.sendFile(filePath, err => {
+    if (err) {
+      console.error('Error al enviar el archivo:', err.message);
+      res.status(500).send('Error al enviar el archivo');
+    } else {
+      console.log('Archivo enviado correctamente:', filename);
+    }
   });
-
-  // Si quieres enviar el archivo en lugar de JSON, comenta la línea anterior y descomenta esta:
-  // res.sendFile(filePath);
 });
 
 module.exports = router;
