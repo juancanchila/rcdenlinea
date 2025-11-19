@@ -6,7 +6,7 @@ const listarReceptores = async (req, res) => {
     const limit = parseInt(req.query.limit) || 50;
     const offset = parseInt(req.query.offset) || 0;
 
-     const { count, rows } = await Generador.findAndCountAll({
+    const { count, rows } = await Receptor.findAndCountAll({
       limit,
       offset,
       order: [['idreceptor', 'DESC']]
