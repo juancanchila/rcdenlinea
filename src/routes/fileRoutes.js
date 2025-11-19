@@ -1,48 +1,35 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const mime = require('mime-types'); // npm i mime-types
-const router = express.Router();
+const mime = require('mime-types');
+const multer = require('multer'); 
 const { verifyToken } = require('../middlewares/authMiddleware');
 
-// Función para normalizar nombres de archivo
+const router = express.Router();
+
+// Ruta base de almacenamiento
+const uploadsDir = path.join(__dirname, '../../private_uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+
+// Configuración de multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => cb(null, file.originalname.normalize('NFC'))
+});
+const upload = multer({ storage });
+
+// Normalización de nombres
 function normalizeFilename(filename) {
-  return decodeURIComponent(filename)
-    .normalize('NFC')      // Normaliza caracteres Unicode (acentos)
-    .replace(/\+/g, ' ');  // Reemplaza '+' por espacio
+  return decodeURIComponent(filename).normalize('NFC').replace(/\+/g, ' ');
 }
 
-// Ruta protegida: descarga/ver archivo
+// GET: Descargar archivo
 router.get('/:filename', (req, res) => {
   const rawFilename = req.params.filename;
   const filename = normalizeFilename(rawFilename);
-
-  // Depuración rutas
-  console.log('-----------------------------');
-  console.log('Nombre recibido por URL:', rawFilename);
-  console.log('Nombre decodificado:', decodeURIComponent(rawFilename));
-  console.log('Nombre normalizado:', filename);
-  console.log('Directorio actual (__dirname):', __dirname);
-
-  // Ruta absoluta de Plesk para este dominio
-  // Nota: ajusta según la ruta real de tu dominio
-  const uploadsDir = path.join(__dirname, '../../private_uploads'); // ejemplo típico en Plesk
   const filePath = path.join(uploadsDir, filename);
 
-  console.log('Ruta del directorio uploads:', uploadsDir);
-  console.log('Ruta absoluta del archivo:', filePath);
-
-  // Listar archivos en el directorio para depuración
-  try {
-    const filesInDir = fs.readdirSync(uploadsDir);
-    console.log('Archivos en el directorio uploads:', filesInDir);
-  } catch (err) {
-    console.error('Error leyendo directorio uploads:', err.message);
-  }
-
-  // Comprobar existencia
   if (!fs.existsSync(filePath)) {
-    console.log('Archivo no encontrado en disco.');
     return res.status(404).json({
       message: 'Archivo no encontrado',
       receivedFilename: rawFilename,
@@ -51,21 +38,27 @@ router.get('/:filename', (req, res) => {
     });
   }
 
-  // Información del archivo
-  const stats = fs.statSync(filePath);
-  const mimeType = mime.lookup(filePath) || 'unknown';
-  console.log('Archivo encontrado:');
-  console.log('Tamaño:', stats.size, 'bytes');
-  console.log('Tipo MIME:', mimeType);
-
-  // Enviar archivo
   res.sendFile(filePath, err => {
     if (err) {
       console.error('Error al enviar el archivo:', err.message);
       res.status(500).send('Error al enviar el archivo');
-    } else {
-      console.log('Archivo enviado correctamente:', filename);
     }
+  });
+});
+
+// POST: Subir archivo
+router.post('/', verifyToken, upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No se recibió ningún archivo' });
+  }
+
+  const { originalname, size, mimetype, path: savedPath } = req.file;
+  res.status(201).json({
+    message: 'Archivo subido correctamente',
+    filename: originalname,
+    size,
+    mimetype,
+    savedPath
   });
 });
 
