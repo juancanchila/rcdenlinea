@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const mime = require('mime-types');
-const multer = require('multer'); 
+const multer = require('multer');
 const { verifyToken } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -52,13 +52,12 @@ router.post('/', verifyToken, upload.single('file'), (req, res) => {
     return res.status(400).json({ message: 'No se recibió ningún archivo' });
   }
 
-  const { originalname, size, mimetype, path: savedPath } = req.file;
+  const { originalname, size, mimetype } = req.file;
   res.status(201).json({
     message: 'Archivo subido correctamente',
     filename: originalname,
     size,
-    mimetype,
-    savedPath
+    mimetype
   });
 });
 
