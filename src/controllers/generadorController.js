@@ -8,7 +8,7 @@ const listarGeneradores = async (req, res) => {
     const { count, rows } = await Generador.findAndCountAll({
       limit,
       offset,
-      order: [['idgenerador', 'DESC']]
+      order: [['idgenerador', 'ASC']]
     });
 
     res.json({
