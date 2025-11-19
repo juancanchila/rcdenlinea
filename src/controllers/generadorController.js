@@ -2,30 +2,25 @@ const { Generador,Proyecto } = require('../models');
 
 const listarGeneradores = async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit, 10) || 50;
-    const offset = parseInt(req.query.offset, 10) || 0;
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
 
-    const { count, rows } = await Generador.unscoped().findAndCountAll({
+    const { count, rows } = await Generador.findAndCountAll({
       limit,
       offset,
-      order: [[sequelize.col('Generador.idgenerador'), 'DESC']],
-      // logging: console.log
+      order: [['idgenerador', 'DESC']]
     });
-
-    const data = rows.map(r => r.get({ plain: true }));
 
     res.json({
       total: count,
       limit,
       offset,
-      data
+      data: rows
     });
   } catch (error) {
-    console.error('Error listarGeneradores:', error);
     res.status(500).json({ error: 'Error al listar generadores' });
   }
 };
-
 
 
 const obtenerGeneradorPorId = async (req, res) => {
