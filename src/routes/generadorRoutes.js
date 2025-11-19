@@ -57,4 +57,56 @@ router.get('/', generadorController.listarGeneradores);
  */
 router.get('/:id', generadorController.obtenerGeneradorPorId);
 
+/**
+ * @swagger
+ * /generador/{id}:
+ *   put:
+ *     summary: Actualizar generador por ID
+ *     tags: [Generadores]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del generador
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Generador actualizado
+ *       404:
+ *         description: Generador no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.put('/:id', generadorController.actualizarGenerador);
+
+/**
+ * @swagger
+ * /generador/{id}:
+ *   delete:
+ *     summary: Eliminar generador por ID
+ *     tags: [Generadores]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del generador
+ *     responses:
+ *       200:
+ *         description: Generador eliminado
+ *       404:
+ *         description: Generador no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.delete('/:id', generadorController.eliminarGenerador);
+
 module.exports = router;
