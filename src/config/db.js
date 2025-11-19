@@ -1,23 +1,22 @@
-require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,     // EL PUERTO DEL ENV
-    dialect: 'mariadb',
-    logging: false,
-    dialectOptions: {
-      timezone: 'Etc/GMT+5'
-    },
-    define: {
-      timestamps: false,
-      freezeTableName: true
+    'epacartagena_escombros_1',   // Base de datos
+    'epacartagena_bd_5',          // Usuario
+    '97lXl&j58',                  // Clave
+    {
+        host: '172.31.11.185',    // Host limpio
+        port: 3306,               // Puerto de MariaDB
+        dialect: 'mariadb',
+        logging: false,
+        dialectOptions: {
+            timezone: 'Etc/GMT+5',   // Opcional pero recomendado
+        },
+        define: {
+            timestamps: false,
+            freezeTableName: true,
+        },
     }
-  }
 );
 
 module.exports = sequelize;
