@@ -2,7 +2,7 @@ const { Usuario, Rol } = require('../models');
 const jwt = require('jsonwebtoken');
 
 const login = async (req, res) => {
-  console.log('🔐 LOGIN INTENTADO →', new Date().toISOString());
+
   const { usuario, clave } = req.body;
 
   // Validar entrada
