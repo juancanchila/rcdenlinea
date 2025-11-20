@@ -68,16 +68,7 @@ const actualizarVehiculo = async (req, res) => {
 
     const datos = req.body;
 
-    // Validar transportador si viene
-    if (datos.idtransportador !== undefined) {
-      const transportadorExistente = await Transportador.findByPk(datos.idtransportador);
-      if (!transportadorExistente) {
-        return res.status(400).json({ error: 'El transportador indicado no existe' });
-      }
-      vehiculo.idtransportador = datos.idtransportador;
-    }
-
-    // Actualizar el resto de campos (excepto idtransportador que ya se trató)
+    // Actualizar solo los campos que vienen, excepto idtransportador
     for (const campo of Object.keys(datos)) {
       if (campo !== 'idtransportador' && datos[campo] !== undefined) {
         vehiculo[campo] = datos[campo];
