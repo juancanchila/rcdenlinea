@@ -53,7 +53,7 @@ const crearTransportador = async (req, res) => {
     res.status(201).json(transportador);
   } catch (error) {
     console.error('❌ Error crearTransportador:', error);
-    res.status(500).json({ error: 'Error al crear transportador' });
+    res.status(500).json({ error });
   }
 };
 
