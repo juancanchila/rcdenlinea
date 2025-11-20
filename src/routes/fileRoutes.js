@@ -47,7 +47,7 @@ router.get('/:filename', (req, res) => {
 });
 
 // POST: Subir archivo
-router.post('/', verifyToken, upload.single('file'), (req, res) => {
+router.post('/', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No se recibió ningún archivo' });
   }
