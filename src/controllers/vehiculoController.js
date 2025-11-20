@@ -60,26 +60,39 @@ const crearVehiculo = async (req, res) => {
   }
 };
 
-// Actualizar vehículo
 const actualizarVehiculo = async (req, res) => {
   try {
     const vehiculo = await Vehiculo.findByPk(req.params.id);
-    if (!vehiculo) return res.status(404).json({ error: 'Vehículo no encontrado' });
+    if (!vehiculo) {
+      return res.status(404).json({ error: 'Vehículo no encontrado' });
+    }
 
-    if (req.body.idtransportador) {
-      const transportadorExistente = await Transportador.findByPk(req.body.idtransportador);
+    const datos = req.body;
+
+    // Validar transportador si viene
+    if (datos.idtransportador) {
+      const transportadorExistente = await Transportador.findByPk(datos.idtransportador);
       if (!transportadorExistente) {
         return res.status(400).json({ error: 'El transportador indicado no existe' });
       }
     }
 
-    await vehiculo.update(req.body);
-    res.json(vehiculo);
+    // Actualizar solo los campos que vienen en el body
+    Object.keys(datos).forEach((campo) => {
+      if (datos[campo] !== undefined) {
+        vehiculo[campo] = datos[campo];
+      }
+    });
+
+    await vehiculo.save();
+
+    return res.status(200).json({ mensaje: 'Vehículo actualizado correctamente', vehiculo });
   } catch (error) {
-    console.error('❌ Error actualizarVehiculo:', error);
-    res.status(500).json({ error: 'Error al actualizar vehículo' });
+    console.error('Error al actualizar vehículo:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
 
 // Eliminar vehículo
 const eliminarVehiculo = async (req, res) => {
