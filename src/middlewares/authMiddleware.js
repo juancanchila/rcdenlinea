@@ -1,9 +1,11 @@
+// authMiddleware.js
+require('dotenv').config(); // ✅ Carga variables de entorno desde .env
 const jwt = require('jsonwebtoken');
 
 /**
  * Middleware para verificar token JWT.
  * Acepta token desde:
- * 1) Cookies (token_epa)
+ * 1) Cookies (token_epa o lo que definas en COOKIE_NAME)
  * 2) Header Authorization: Bearer <token>
  * 3) Query param ?token=
  */
@@ -35,11 +37,11 @@ const authMiddleware = (req, res, next) => {
       return res.status(403).json({ message: 'Acceso denegado. Token no proporcionado.' });
     }
 
-    // Verificar JWT con fallback de secreto
+    // Verificar JWT con fallback si JWT_SECRET no está definido
     const secret = process.env.JWT_SECRET || 'secreto';
     const decoded = jwt.verify(token, secret);
 
-    // Guardar usuario en req
+    // Guardar usuario decodificado en req
     req.user = decoded;
 
     next();
