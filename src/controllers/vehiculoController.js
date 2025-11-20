@@ -56,7 +56,7 @@ const crearVehiculo = async (req, res) => {
     res.status(201).json(vehiculo);
   } catch (error) {
     console.error('❌ Error crearVehiculo:', error);
-    res.status(500).json({ error: 'Error al crear vehículo' });
+    res.status(500).json({ error});
   }
 };
 
