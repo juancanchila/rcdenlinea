@@ -41,24 +41,57 @@ const obtenerVehiculoPorId = async (req, res) => {
 // Crear vehículo
 const crearVehiculo = async (req, res) => {
   try {
-    const { idtransportador, fotoFrente, fotoLadoDerecho, fotoLadoIzquierdo, fotoTrasera, licenciaTransito } = req.body;
+    const {
+      idtransportador,
+      fotoFrente,
+      fotoLadoDerecho,
+      fotoLadoIzquierdo,
+      fotoTrasera,
+      licenciaTransito
+    } = req.body;
 
-    if (!idtransportador || !fotoFrente || !fotoLadoDerecho || !fotoLadoIzquierdo || !fotoTrasera || !licenciaTransito) {
-      return res.status(400).json({ error: 'Faltan datos obligatorios: idtransportador, fotos o licenciaTransito' });
+    // Validar campos obligatorios
+    if (
+      !idtransportador ||
+      !fotoFrente ||
+      !fotoLadoDerecho ||
+      !fotoLadoIzquierdo ||
+      !fotoTrasera ||
+      !licenciaTransito
+    ) {
+      return res.status(400).json({
+        error: 'Faltan datos obligatorios: idtransportador, fotos o licenciaTransito'
+      });
     }
 
+    // Verificar que el transportador exista
     const transportadorExistente = await Transportador.findByPk(idtransportador);
     if (!transportadorExistente) {
       return res.status(400).json({ error: 'El transportador indicado no existe' });
     }
 
-    const vehiculo = await Vehiculo.create(req.body);
-    res.status(201).json(vehiculo);
+    // Contar cuántos vehículos tiene este transportador
+    const cantidadVehiculos = await Vehiculo.count({
+      where: { idtransportador }
+    });
+
+    // Generar PIN: 2-[idtransportador]-[consecutivo]
+    const consecutivo = String(cantidadVehiculos + 1).padStart(3, '0');
+    const pinGenerado = `2-${idtransportador}-${consecutivo}`;
+
+    // Crear vehículo con el PIN generado
+    const vehiculo = await Vehiculo.create({
+      ...req.body,
+      pin: pinGenerado
+    });
+
+    return res.status(201).json(vehiculo);
   } catch (error) {
     console.error('❌ Error crearVehiculo:', error);
-    res.status(500).json({ error});
+    return res.status(500).json({ error: 'Error interno del servidor' });
   }
-};
+}
+// Actualizar vehículo
 const actualizarVehiculo = async (req, res) => {
   try {
     const vehiculo = await Vehiculo.findByPk(req.params.id);
