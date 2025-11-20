@@ -89,7 +89,7 @@ const actualizarVehiculo = async (req, res) => {
     return res.status(200).json({ mensaje: 'Vehículo actualizado correctamente', vehiculo });
   } catch (error) {
     console.error('Error al actualizar vehículo:', error);
-    return res.status(500).json({ error: 'Error interno del servidor' });
+    return res.status(500).json({ error });
   }
 };
 
