@@ -67,6 +67,10 @@ module.exports = (sequelize, DataTypes) => {
       tipo: {
         type: DataTypes.STRING(50),
         allowNull: true
+      },
+      cantidad_autorizada: {
+        type: DataTypes.STRING(50),
+        allowNull: true
       }
     },
     {
