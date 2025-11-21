@@ -82,7 +82,17 @@ module.exports = (sequelize, DataTypes) => {
     pin: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+   tipo: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    cantidad_autorizada: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
+
+
   }, {
     tableName: 'receptor',
     timestamps: false

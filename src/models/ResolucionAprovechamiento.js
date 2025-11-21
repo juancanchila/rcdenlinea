@@ -63,6 +63,10 @@ module.exports = (sequelize, DataTypes) => {
       pin: {
         type: DataTypes.STRING(50),
         allowNull: true
+      },
+      tipo: {
+        type: DataTypes.STRING(50),
+        allowNull: true
       }
     },
     {
