@@ -55,7 +55,6 @@ const obtenerVisitaPorId = async (req, res) => {
 
 // Crear visita técnica
 // Requiere: idProyecto y los campos de la visita en el body
-// Valida: que exista el proyecto; que NO exista ya una visita para ese proyecto (si esa es la regla)
 const crearVisita = async (req, res) => {
   try {
     const {
@@ -97,17 +96,17 @@ const crearVisita = async (req, res) => {
       acta
     });
 
-    // devolver con proyecto incluido
-    const visitaConProyecto = await VisitaTecnica.findByPk(nuevaVisita.idvisitatecnica, {
-      include: [{ model: Proyecto, as: 'proyecto' }]
+    // devolver solo la visita creada
+    res.status(201).json({
+      message: 'Visita técnica creada correctamente',
+      data: nuevaVisita
     });
-
-    res.status(201).json({ message: 'Visita técnica creada correctamente', data: visitaConProyecto });
   } catch (error) {
     console.error('Error en crearVisita:', error);
     res.status(500).json({ error: 'Error al crear visita técnica' });
   }
 };
+
 
 // Actualizar visita técnica por ID
 // Actualiza solo campos presentes en req.body
