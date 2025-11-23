@@ -78,12 +78,7 @@ const crearVisita = async (req, res) => {
       return res.status(404).json({ error: 'Proyecto no encontrado' });
     }
 
-    // verificar si ya existe una visita para ese proyecto
-    const visitaExistente = await VisitaTecnica.findOne({ where: { idProyecto } });
-    if (visitaExistente) {
-      return res.status(409).json({ error: 'Ya existe una visita técnica para este proyecto' });
-    }
-
+  
     // Crear la visita
     const nuevaVisita = await VisitaTecnica.create({
       fechaCreacion,
