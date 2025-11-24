@@ -40,9 +40,9 @@ const obtenerResolucionPorId = async (req, res) => {
 // =====================================
 const crearResolucion = async (req, res) => {
   try {
-    const { idReceptor, numeroResolucion, ubicacion, naturalezaActividad, tipoAprovechamiento, fechaInicio, fechaFin } = req.body;
+    const { idReceptor} = req.body;
 
-    if (!idReceptor || !numeroResolucion || !ubicacion || !naturalezaActividad || !tipoAprovechamiento || !fechaInicio) {
+    if (!idReceptor ) {
       return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
