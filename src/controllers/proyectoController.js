@@ -1,4 +1,4 @@
-const { Proyecto, VisitaTecnica } = require('../models');
+const { Proyecto, VisitaTecnica, Generador } = require('../models');
 
 // Listar proyectos paginados
 const listarProyectos = async (req, res) => {
