@@ -12,8 +12,7 @@ const {
 
 const buscarPorPin = async (req, res) => {
   try {
-    const { tipo, valor } = req.query; 
-    // tipo puede ser: 'generador', 'transportador', 'receptor', 'vehiculo', 'usuarios', 'visitatecnica', 'resolucion', 'proyecto'
+    const { tipo, valor } = req.query;
 
     if (!tipo || !valor) {
       return res.status(400).json({ error: 'Debe enviar tipo y valor' });
@@ -23,7 +22,7 @@ const buscarPorPin = async (req, res) => {
 
     switch (tipo.toLowerCase()) {
       case 'generador':
-        resultado = await Generador.findOne({
+        resultado = await Generador.findAll({
           where: {
             [Op.or]: [
               { razonSocial: { [Op.like]: `%${valor}%` } },
@@ -37,7 +36,7 @@ const buscarPorPin = async (req, res) => {
         break;
 
       case 'transportador':
-        resultado = await Transportador.findOne({
+        resultado = await Transportador.findAll({
           where: {
             [Op.or]: [
               { razonSocial: { [Op.like]: `%${valor}%` } },
@@ -55,7 +54,7 @@ const buscarPorPin = async (req, res) => {
         break;
 
       case 'receptor':
-        resultado = await Receptor.findOne({
+        resultado = await Receptor.findAll({
           where: {
             [Op.or]: [
               { razonSocial: { [Op.like]: `%${valor}%` } },
@@ -69,7 +68,7 @@ const buscarPorPin = async (req, res) => {
         break;
 
       case 'vehiculo':
-        resultado = await Vehiculo.findOne({
+        resultado = await Vehiculo.findAll({
           where: {
             [Op.or]: [
               { numeroIdentificacion: { [Op.like]: `%${valor}%` } },
@@ -81,7 +80,7 @@ const buscarPorPin = async (req, res) => {
         break;
 
       case 'usuarios':
-        resultado = await Usuario.findOne({
+        resultado = await Usuario.findAll({
           where: {
             [Op.or]: [
               { estado: { [Op.like]: `%${valor}%` } },
@@ -94,7 +93,7 @@ const buscarPorPin = async (req, res) => {
         break;
 
       case 'visitatecnica':
-        resultado = await VisitaTecnica.findOne({
+        resultado = await VisitaTecnica.findAll({
           where: {
             [Op.or]: [
               { fechaCreacion: { [Op.like]: `%${valor}%` } },
@@ -106,7 +105,7 @@ const buscarPorPin = async (req, res) => {
         break;
 
       case 'resolucion':
-        resultado = await ResolucionAprovechamiento.findOne({
+        resultado = await ResolucionAprovechamiento.findAll({
           where: {
             [Op.or]: [
               { numeroResolucion: { [Op.like]: `%${valor}%` } },
@@ -122,24 +121,24 @@ const buscarPorPin = async (req, res) => {
         break;
 
       case 'proyecto':
-        // 🔹 Búsqueda dinámica por cualquiera de sus campos
-        const where = {};
         const atributosProyecto = Object.keys(Proyecto.rawAttributes);
 
-        where[Op.or] = atributosProyecto.map(campo => ({
-          [campo]: { [Op.like]: `%${valor}%` }
-        }));
-
-        resultado = await Proyecto.findOne({ where });
+        resultado = await Proyecto.findAll({
+          where: {
+            [Op.or]: atributosProyecto.map(campo => ({
+              [campo]: { [Op.like]: `%${valor}%` }
+            }))
+          }
+        });
         break;
 
       default:
-        return res.status(400).json({ 
-          error: 'Tipo no válido. Use generador, transportador, receptor, vehiculo, usuarios, visitatecnica, resolucion o proyecto.' 
+        return res.status(400).json({
+          error: 'Tipo no válido. Use generador, transportador, receptor, vehiculo, usuarios, visitatecnica, resolucion o proyecto.'
         });
     }
 
-    if (!resultado) {
+    if (!resultado || resultado.length === 0) {
       return res.status(404).json({ error: `${tipo} no encontrado` });
     }
 
