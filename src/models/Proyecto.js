@@ -44,7 +44,28 @@ module.exports = (sequelize, DataTypes) => {
     fechaExpedicionPIN: DataTypes.DATE,
     codigoRadicadoSIGOD: DataTypes.STRING(25),
     CoordenadaX: DataTypes.STRING(30),
-    CoordenadaY: DataTypes.STRING(30)
+    CoordenadaY: DataTypes.STRING(30),
+
+    // Campos nuevos
+    carta_solicitud: DataTypes.STRING(600),
+    descripcion_tecnica_proyecto: DataTypes.STRING(600),
+    certificado_tradicion_libertad: DataTypes.STRING(600),
+    autorizacion_bic: DataTypes.STRING(600),
+    registro_defuncion: DataTypes.STRING(600),
+    cuadro_cantidades_rcd: DataTypes.STRING(600),
+    soporte_pago_pin: DataTypes.STRING(600),
+    cronograma_actividades: DataTypes.STRING(600),
+    planos_aprobados_curaduria: DataTypes.STRING(600),
+    contrato_obra_otros: DataTypes.STRING(600),
+    resolucion_curaduria_o_licencia: DataTypes.STRING(600),
+    programa_manejo_rcd_pdf: DataTypes.STRING(600),
+    autorizacion_bicBigOrSmall: DataTypes.STRING(600),
+    certificado_no_requiere_licencia: DataTypes.STRING(600),
+    permiso_ocupacion_cauce: DataTypes.STRING(6000),
+    tipo: {
+      type: DataTypes.STRING(600),
+      allowNull: false
+    }
   }, {
     tableName: 'proyecto',
     timestamps: false
