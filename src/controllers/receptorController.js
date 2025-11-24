@@ -102,7 +102,7 @@ const crearReceptor = async (req, res) => {
     res.status(201).json(nuevo);
   } catch (error) {
     console.error('Error al crear receptor:', error);
-    res.status(500).json({ error: 'Error al crear receptor' });
+    res.status(500).json({ error });
   }
 };
 
