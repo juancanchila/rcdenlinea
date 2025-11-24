@@ -57,4 +57,78 @@ router.get('/', resolucionController.listarResoluciones);
  */
 router.get('/:id', resolucionController.obtenerResolucionPorId);
 
+/**
+ * @swagger
+ * /resolucion:
+ *   post:
+ *     summary: Crear una nueva resolución
+ *     tags: [Resoluciones]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Resolucion'
+ *     responses:
+ *       201:
+ *         description: Resolución creada exitosamente
+ *       400:
+ *         description: Error de validación de datos
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post('/', resolucionController.crearResolucion);
+
+/**
+ * @swagger
+ * /resolucion/{id}:
+ *   put:
+ *     summary: Actualizar resolución por ID
+ *     tags: [Resoluciones]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la resolución a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Resolucion'
+ *     responses:
+ *       200:
+ *         description: Resolución actualizada correctamente
+ *       404:
+ *         description: Resolución no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.put('/:id', resolucionController.actualizarResolucion);
+
+/**
+ * @swagger
+ * /resolucion/{id}:
+ *   delete:
+ *     summary: Eliminar resolución por ID
+ *     tags: [Resoluciones]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la resolución a eliminar
+ *     responses:
+ *       200:
+ *         description: Resolución eliminada exitosamente
+ *       404:
+ *         description: Resolución no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.delete('/:id', resolucionController.eliminarResolucion);
+
 module.exports = router;
