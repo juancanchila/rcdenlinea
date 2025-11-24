@@ -42,19 +42,38 @@ const obtenerProyectoPorId = async (req, res) => {
 // Crear proyecto
 const crearProyecto = async (req, res) => {
   try {
-    const { idgenerador, valor, pin } = req.body;
+    const { idgenerador, valor, nombre, ubicacion } = req.body;
 
-    if (!idgenerador || !valor || !pin) {
-      return res.status(400).json({ error: 'Faltan datos obligatorios: idgenerador, valor o pin' });
+    if (!idgenerador || !valor || !nombre || !ubicacion) {
+      return res.status(400).json({ error: 'Faltan datos obligatorios: idgenerador, valor, nombre o ubicacion' });
     }
 
-    const proyecto = await Proyecto.create(req.body);
+    // Verificar que el generador exista
+    const generador = await Generador.findByPk(idgenerador);
+    if (!generador) {
+      return res.status(400).json({ error: 'El generador indicado no existe' });
+    }
+
+    // Contar cuántos proyectos tiene este generador
+    const cantidadProyectos = await Proyecto.count({ where: { idgenerador } });
+
+    // Generar PIN: 2-[idgenerador]-[consecutivo]
+    const consecutivo = String(cantidadProyectos + 1).padStart(3, '0');
+    const pinGenerado = `2-${idgenerador}-${consecutivo}`;
+
+    // Crear proyecto con PIN generado
+    const proyecto = await Proyecto.create({
+      ...req.body,
+      pin: pinGenerado
+    });
+
     res.status(201).json(proyecto);
   } catch (error) {
     console.error('❌ Error crearProyecto:', error);
     res.status(500).json({ error: 'Error al crear proyecto' });
   }
 };
+
 
 // Actualizar proyecto
 const actualizarProyecto = async (req, res) => {
