@@ -42,10 +42,11 @@ const obtenerProyectoPorId = async (req, res) => {
 // Crear proyecto
 const crearProyecto = async (req, res) => {
   try {
-    const { idgenerador, valor, nombre, ubicacion } = req.body;
+   const { idgenerador } = req.body;
 
-    if (!idgenerador || !valor || !nombre || !ubicacion) {
-      return res.status(400).json({ error: 'Faltan datos obligatorios: idgenerador, valor, nombre o ubicacion' });
+     // Validar solo el generador
+    if (!idgenerador) {
+      return res.status(400).json({ error: 'Falta el id del generador' });
     }
 
     // Verificar que el generador exista
