@@ -71,7 +71,7 @@ const crearProyecto = async (req, res) => {
     res.status(201).json(proyecto);
   } catch (error) {
     console.error('❌ Error crearProyecto:', error);
-    res.status(500).json({ error: 'Error al crear proyecto' });
+    res.status(500).json({ error });
   }
 };
 
