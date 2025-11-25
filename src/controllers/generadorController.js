@@ -22,6 +22,17 @@ const listarGeneradores = async (req, res) => {
   }
 };
 
+const crearGenerador = async (req, res) => {
+  try {
+    const generador = await Generador.create(req.body);
+    res.status(201).json(generador);
+  } catch (error) {
+    console.error('❌ Error crearGenerador:', error);
+    res.status(500).json({ error });
+  }
+};
+
+
 const obtenerGeneradorPorId = async (req, res) => {
   try {
     const generador = await Generador.findByPk(req.params.id, {
@@ -114,5 +125,6 @@ module.exports = {
   listarGeneradores,
   obtenerGeneradorPorId,
   actualizarGenerador,
-  eliminarGenerador
+  eliminarGenerador,
+  crearGenerador
 };
