@@ -57,7 +57,7 @@ const crearResolucion = async (req, res) => {
 
     // Generar PIN: 2-[idReceptor]-[consecutivo]
     const consecutivo = String(cantidadResoluciones + 1).padStart(3, '0');
-    const pinGenerado = `2-${idReceptor}-${consecutivo}`;
+    const pinGenerado = `3-${idReceptor}-${consecutivo}`;
 
     // Crear resolución
     const resolucion = await ResolucionAprovechamiento.create({
