@@ -59,6 +59,28 @@ router.get('/:id', generadorController.obtenerGeneradorPorId);
 
 /**
  * @swagger
+ * /generador:
+ *   post:
+ *     summary: Crear un nuevo generador
+ *     tags: [Generadores]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Generador'
+ *     responses:
+ *       201:
+ *         description: Generador creado exitosamente
+ *       400:
+ *         description: Faltan datos obligatorios
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post('/', generadorController.crearGenerador);
+
+/**
+ * @swagger
  * /generador/{id}:
  *   put:
  *     summary: Actualizar generador por ID
@@ -75,7 +97,7 @@ router.get('/:id', generadorController.obtenerGeneradorPorId);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
+ *             $ref: '#/components/schemas/Generador'
  *     responses:
  *       200:
  *         description: Generador actualizado
