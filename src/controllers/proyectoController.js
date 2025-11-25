@@ -61,7 +61,7 @@ const crearProyecto = async (req, res) => {
 
     // Generar PIN: 2-[idgenerador]-[consecutivo]
     const consecutivo = String(cantidadProyectos + 1).padStart(3, '0');
-    const pinGenerado = `2-${idgenerador}-${consecutivo}`;
+    const pinGenerado = `1-${idgenerador}-${consecutivo}`;
 
     // Crear proyecto con PIN generado
     const proyecto = await Proyecto.create({
