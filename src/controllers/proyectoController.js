@@ -20,28 +20,23 @@ const listarProyectos = async (req, res) => {
 };
 
 // Obtener proyecto por ID
-const obtenerGeneradorPorId = async (req, res) => {
+const obtenerProyectoPorId = async (req, res) => {
   try {
-    const generador = await Generador.findByPk(req.params.id, {
+    const proyecto = await Proyecto.findByPk(req.params.id, {
       include: [
-        {
-          model: Proyecto,
-          as: 'proyectos',   // asegúrate de definir la relación en tu modelo
-          include: [
-            { model: VisitaTecnica, as: 'visitas' }
-          ]
-        }
+        { model: VisitaTecnica, as: 'visitas' },
+        { model: Generador, as: 'generador' } // <-- añadimos el generador
       ]
     });
 
-    if (!generador) {
-      return res.status(404).json({ error: 'Generador no encontrado' });
+    if (!proyecto) {
+      return res.status(404).json({ error: 'Proyecto no encontrado' });
     }
 
-    res.json(generador);
+    res.json(proyecto);
   } catch (error) {
-    console.error('❌ Error obtenerGeneradorPorId:', error);
-    res.status(500).json({ error: 'Error al obtener generador' });
+    console.error('❌ Error obtenerProyectoPorId:', error);
+    res.status(500).json({ error: 'Error al obtener proyecto' });
   }
 };
 
