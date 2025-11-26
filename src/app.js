@@ -21,6 +21,12 @@ const pinRoutes = require('./routes/pinRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 🔥 FORZAR UTF-8 EN TODAS LAS RESPUESTAS JSON
+app.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: true, credentials: true }));
