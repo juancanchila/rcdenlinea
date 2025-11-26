@@ -1,48 +1,14 @@
 const { Generador, Proyecto } = require('../models');
 
-const { sequelize } = require('../models');
-
-const listarProyectos = async (req, res) => {
+const listarGeneradores = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
     const offset = parseInt(req.query.offset) || 0;
 
-    const { count, rows } = await Proyecto.findAndCountAll({
+    const { count, rows } = await Generador.findAndCountAll({
       limit,
       offset,
-      order: [['idProyecto', 'DESC']],
-      include: [
-        {
-          model: Generador,
-          as: 'generador',
-          attributes: [
-            'idgenerador',
-            'tipoDocumento',
-            'razonSocial',
-            'primerNombre',
-            'segundoNombre',
-            'primerApellidos',
-            'segundoApellido',
-
-            // 💥 Campo calculado
-            [
-              sequelize.literal(`
-                CASE 
-                  WHEN generador.tipoDocumento = 'NIT' 
-                    THEN generador.razonSocial
-                  ELSE CONCAT(
-                    IFNULL(generador.primerNombre, ''), ' ',
-                    IFNULL(generador.segundoNombre, ''), ' ',
-                    IFNULL(generador.primerApellidos, ''), ' ',
-                    IFNULL(generador.segundoApellido, '')
-                  )
-                END
-              `),
-              'nombreGenerador'
-            ]
-          ]
-        }
-      ]
+      order: [['idgenerador', 'DESC']]
     });
 
     res.json({
@@ -51,13 +17,10 @@ const listarProyectos = async (req, res) => {
       offset,
       data: rows
     });
-
   } catch (error) {
-    console.error("❌ Error listar proyectos:", error);
-    res.status(500).json({ error: "Error al listar proyectos" });
+    res.status(500).json({ error: 'Error al listar generadores' });
   }
 };
-
 
 const crearGenerador = async (req, res) => {
   try {

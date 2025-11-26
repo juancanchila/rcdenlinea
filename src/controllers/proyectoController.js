@@ -1,6 +1,8 @@
 const { Proyecto, VisitaTecnica, Generador } = require('../models');
 
 // Listar proyectos paginados
+const { sequelize } = require('../models');
+
 const listarProyectos = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
@@ -9,15 +11,54 @@ const listarProyectos = async (req, res) => {
     const { count, rows } = await Proyecto.findAndCountAll({
       limit,
       offset,
-      order: [['idProyecto', 'DESC']]
+      order: [['idProyecto', 'DESC']],
+      include: [
+        {
+          model: Generador,
+          as: 'generador',
+          attributes: [
+            'idgenerador',
+            'tipoDocumento',
+            'razonSocial',
+            'primerNombre',
+            'segundoNombre',
+            'primerApellidos',
+            'segundoApellido',
+
+            // 💥 Campo calculado
+            [
+              sequelize.literal(`
+                CASE 
+                  WHEN generador.tipoDocumento = 'NIT' 
+                    THEN generador.razonSocial
+                  ELSE CONCAT(
+                    IFNULL(generador.primerNombre, ''), ' ',
+                    IFNULL(generador.segundoNombre, ''), ' ',
+                    IFNULL(generador.primerApellidos, ''), ' ',
+                    IFNULL(generador.segundoApellido, '')
+                  )
+                END
+              `),
+              'nombreGenerador'
+            ]
+          ]
+        }
+      ]
     });
 
-    res.json({ total: count, limit, offset, data: rows });
+    res.json({
+      total: count,
+      limit,
+      offset,
+      data: rows
+    });
+
   } catch (error) {
-    console.error('❌ Error listarProyectos:', error);
-    res.status(500).json({ error: 'Error al listar proyectos' });
+    console.error("❌ Error listar proyectos:", error);
+    res.status(500).json({ error: "Error al listar proyectos" });
   }
 };
+
 
 // Obtener proyecto por ID
 const obtenerProyectoPorId = async (req, res) => {
