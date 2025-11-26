@@ -1,7 +1,5 @@
 const { Proyecto, VisitaTecnica, Generador } = require('../models');
 
-// Listar proyectos paginados
-const { sequelize } = require('../models');
 
 const listarProyectos = async (req, res) => {
   try {
@@ -17,40 +15,43 @@ const listarProyectos = async (req, res) => {
           model: Generador,
           as: 'generador',
           attributes: [
-            'idgenerador',
             'tipoDocumento',
             'razonSocial',
             'primerNombre',
             'segundoNombre',
             'primerApellidos',
-            'segundoApellido',
-
-            // 💥 Campo calculado
-            [
-              sequelize.literal(`
-                CASE 
-                  WHEN generador.tipoDocumento = 'NIT' 
-                    THEN generador.razonSocial
-                  ELSE CONCAT(
-                    IFNULL(generador.primerNombre, ''), ' ',
-                    IFNULL(generador.segundoNombre, ''), ' ',
-                    IFNULL(generador.primerApellidos, ''), ' ',
-                    IFNULL(generador.segundoApellido, '')
-                  )
-                END
-              `),
-              'nombreGenerador'
-            ]
+            'segundoApellido'
           ]
         }
       ]
+    });
+
+    // 🔥 Construir el nombre calculado Y REEMPLAZARLO como "generador"
+    const data = rows.map(p => {
+      let nombreGenerador = '';
+
+      if (p.generador.tipoDocumento === 'NIT') {
+        nombreGenerador = p.generador.razonSocial;
+      } else {
+        nombreGenerador = [
+          p.generador.primerNombre || '',
+          p.generador.segundoNombre || '',
+          p.generador.primerApellidos || '',
+          p.generador.segundoApellido || ''
+        ].join(' ').trim();
+      }
+
+      return {
+        ...p.toJSON(),
+        generador: nombreGenerador   // ← EXACTAMENTE LO QUE PEDISTE
+      };
     });
 
     res.json({
       total: count,
       limit,
       offset,
-      data: rows
+      data
     });
 
   } catch (error) {
