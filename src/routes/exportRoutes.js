@@ -3,6 +3,6 @@ const express = require('express');
 const router = express.Router();
 const { exportAllPinsCsv } = require('../controllers/exportController');
 
-router.get('/export/all', exportAllPinsCsv);
+router.get('/', exportAllPinsCsv);
 
 module.exports = router;
