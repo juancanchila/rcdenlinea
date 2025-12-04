@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true
     },
     nombre: DataTypes.STRING(300),
-    ubicacion: DataTypes.STRING(300),
+    ubicacion: DataTypes.STRING(900),
     tipoUsoPredio: DataTypes.STRING(45),
     localidad: DataTypes.STRING(45),
     barrio: DataTypes.STRING(45),
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
     CoordenadaX: DataTypes.STRING(30),
     CoordenadaY: DataTypes.STRING(30),
 
-    // Campos nuevos
+    // Documentos y archivos
     carta_solicitud: DataTypes.STRING(600),
     descripcion_tecnica_proyecto: DataTypes.STRING(600),
     certificado_tradicion_libertad: DataTypes.STRING(600),
@@ -65,7 +65,15 @@ module.exports = (sequelize, DataTypes) => {
     tipo: {
       type: DataTypes.STRING(600),
       allowNull: false
-    }
+    },
+    licencia: DataTypes.STRING(900),
+
+    // Campos sucesión / herederos
+    radicacion_juzgado_sucesion: DataTypes.STRING(600),
+    documento_privado_herederos: DataTypes.STRING(600),
+    cedula_herederos: DataTypes.STRING(600),
+    registro_civil_hijos: DataTypes.STRING(600),
+    registro_matrimonio_conyuge: DataTypes.STRING(600)
   }, {
     tableName: 'proyecto',
     timestamps: false
