@@ -146,7 +146,7 @@ const buscarPorPin = async (req, res) => {
 
   } catch (error) {
     console.error('❌ Error en buscarPorPin:', error);
-    res.status(500).json({ error: 'Error en la búsqueda de PIN' });
+    res.status(500).json({ error });
   }
 };
 
