@@ -73,6 +73,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: true
     },
+        fechaInicio: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     fechaVencimientoPIN: {
       type: DataTypes.DATE,
       allowNull: true
