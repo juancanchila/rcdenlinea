@@ -63,6 +63,7 @@ const exportAllPinsCsv = async (req, res) => {
         matriculaInmobiliaria: p.matriculaInmobiliaria || 'N/A',
         fechaExpedicionPIN: p.fechaExpedicionPIN || 'N/A',
         fechaVencimiento: p.fechaVencimiento || 'N/A',
+        fechaInicio: p.fechaInicio || 'N/A',
         // Campos de vehículo/resolución vacíos
         placa: '',
         modelo: '',
