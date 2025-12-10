@@ -30,14 +30,7 @@ const exportAllPinsCsv = async (req, res) => {
         razonSocial: nombreTransportador,
         lugarExpedicion: v.lugarExpedicion || 'CARTAGENA',
         // Campos de proyecto/resolución vacíos
-        fechaInicio: '',
-        fechaFinalizacion: '',
-        nombreProyecto: '',
-        Direccion: '',
-        matriculaInmobiliaria: '',
-        numeroResolucion: '',
-        tipoAprovechamiento: '',
-        direccion: ''
+        fechaInicio: v.fechaInicio || '',
       });
     });
 
@@ -64,14 +57,6 @@ const exportAllPinsCsv = async (req, res) => {
         fechaExpedicionPIN: p.fechaExpedicionPIN || 'N/A',
         fechaVencimiento: p.fechaVencimiento || 'N/A',
         fechaInicio: p.fechaInicio || 'N/A',
-        // Campos de vehículo/resolución vacíos
-        placa: '',
-        modelo: '',
-        capacidad: '',
-        lugarExpedicion: '',
-        numeroResolucion: '',
-        tipoAprovechamiento: '',
-        direccion: ''
       });
     });
 
@@ -95,16 +80,6 @@ const exportAllPinsCsv = async (req, res) => {
         numeroIdentificacion: rec.numeroDocumento || 'N/A',
         razonSocial: razonSocial,
         direccion: rec.direccion || 'N/A',
-        // Campos de vehículo/proyecto vacíos
-        placa: '',
-        modelo: '',
-        capacidad: '',
-        lugarExpedicion: '',
-        fechaInicio: '',
-        fechaFinalizacion: '',
-        nombreProyecto: '',
-        Direccion: '',
-        matriculaInmobiliaria: ''
       });
     });
 
