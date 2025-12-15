@@ -20,6 +20,7 @@ const fileRoutes = require('./routes/fileRoutes');
 const roleRoutes = require('./routes/roleRoutes');
 const pinRoutes = require('./routes/pinRoutes');
 const exportRoutes = require('./routes/exportRoutes');
+const mapRoutes = require('./routes/mapRoute');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cookieParser());
@@ -103,6 +104,7 @@ app.use('/api/roles', roleRoutes);
 app.use('/api/pin', pinRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/export', exportRoutes);
+app.use('/api/map', mapRoutes);
 // ---------------------------------------------------
 // 🧩 Levantar servidor
 // ---------------------------------------------------
